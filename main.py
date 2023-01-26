@@ -6,7 +6,7 @@ from facebook_business.adobjects.ad import Ad
 from credential import event
 
 
-def get_facebook_data(event):
+def get_facebook_data(event) :
     pubsub_massage = event[
         'data']  # переделать на base64, чтоба забрать потом data pub sub https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
     if pubsub_massage == 'facebook_cost':
