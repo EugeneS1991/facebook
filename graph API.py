@@ -38,11 +38,12 @@ def get_facebook_data(event):
                   # + ',' + ad + ',' + insights + ',' + adcreatives + ',' + targetingsentencelines + '&' + 'access_token=' + access_token
             # print(url)
             # url = "https://graph.facebook.com/" + api_version + "/act_" + account_id + "/ads?fields=insights&time_range={since:2012-08-16,until:2012-08-16}&access_token=" + access_token
+            # time_range = {since: '2023-01-01', until: '2023-01-02'}
 
         #
         #     # url = "https://graph.facebook.com/" + api_version + "/act_" + account_id +"/ads?fields=name,account_id,currency,timezone_id&access_token=" + access_token
-        #     url = "https://graph.facebook.com/" + api_version + "/act_" + account_id +"/ads?fields=insights&{time_range={since:2022-08-10,until:2022-08-10}}&access_token=" + access_token
-            url = "https://graph.facebook.com/" + api_version + "/act_" + account_id + "/ads?fields=insights&level=ad&time_increment=1&time_range={since:'2023-01-01',until:'2023-01-02'}&access_token=" + access_token
+        #     url = "https://graph.facebook.com/" + api_version + "/act_" + account_id + "/ads?fields=insights&{time_range={since:2022-08-10,until:2022-08-10}}&access_token=" + access_token
+            url = "https://graph.facebook.com/" + api_version + "/act_" + account_id + "/ads?fields=insights.data.time_range={since:'2023-01-01',until:'2023-01-01'}&level=ad&time_increment=1&access_token=" + access_token
         #     # act_417625609928355/ads?fields=insights{account_id,actions,ad_name,adset_name,date_start,date_stop}&{time_range=since:2022-08-10,until:2022-08-10}
             headers = {}
 

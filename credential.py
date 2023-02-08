@@ -5,3 +5,13 @@ event = {'data': 'facebook_cost',
                         'account_id': '417625609928355',
                         'api_version': 'v15.0'
                         }}
+
+
+# #
+# event = {'data': 'facebook_cost',
+#          'attributes': {'access_token': 'EAAZA0TOaVZBYcBANtlOnRvHxaXT0608idXynIP4AQ0PfD8g1kkLIXxwbZBdvdoyoUF4mS1rBKgxhlGHlzlXO4swF9uc224uZCrroef3WvhrBUBnZAsZBzvZAkPns4yNyHhmDsAiseT9Rvt6JEDlv6WWZCkLllS3NjZBbZAukTnxzt1uZA5a6rlwZANsO',
+#                         'app_secret': '602b38b3d8488b7e571885cbf641cd53',
+#                         'app_id': '1816723495188871',
+#                         'account_id': '417625609928355',
+#                         'api_version': 'v15.0'
+#                         }}
