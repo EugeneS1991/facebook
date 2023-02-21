@@ -379,5 +379,5 @@ def facebook_data(event, context):
                                    clustering_field) == "ok":
                 insert_rows_json(bigquery_client, project_id, dataset_id, table_id, result)
 
-            return "ok", result
+            return "ok"
 
