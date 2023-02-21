@@ -8,16 +8,13 @@ from facebook_business.adobjects.adcreative import AdCreative
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 from bson.json_util import dumps, loads
-import datetime
+from datetime import datetime, date, timedelta
 from credential import event
 import time
 import logging
 
 logger = logging.getLogger()
-
-append_data_date = str(datetime.datetime.utcnow())
 # from bson.json_util import dumps, loads
-
 schema_facebook_table = [
     bigquery.SchemaField("date", "DATE", mode="REQUIRED"),
     bigquery.SchemaField("date_start", "DATE", mode="REQUIRED"),
@@ -129,27 +126,29 @@ def insert_rows_json(bigquery_client, project_id, dataset_id, table_id, result):
 
 
 def facebook_data(event):
-    pubsub_massage = event[
-        'data']  # переделать на base64, чтоба забрать потом data pub sub https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
+    pubsub_massage = event['data']  # переделать на base64, чтоба забрать потом data pub sub https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
     # bigquery_client = bigquery.Client()
     GOOGLE_APPLICATION_CREDENTIALS = '/Projects/facebook_correct/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
     bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
 
     if pubsub_massage == 'facebook_data':
         access_token = event['attributes']['access_token']
-        app_secret = event['attributes']['app_secret']
-        app_id = event['attributes']['app_id']
         account_id = event['attributes']['account_id']
+        app_id = event['attributes']['app_id']
+        app_secret = event['attributes']['app_secret']
         api_version = event['attributes']['api_version']
         project_id = event['attributes']['project_id']
         dataset_id = event['attributes']['dataset_id']
         table_id = event['attributes']['table_id']
+        date_since = event['attributes']['data_start']
+        date_until = event['attributes']['data_start']
+        append_data_date = str(datetime.utcnow())
         try:
             FacebookAdsApi.init(app_id, app_secret, access_token, api_version=api_version)
 
             account = AdAccount('act_' + account_id)
-            since = '2023-01-01'
-            until = '2023-01-01'
+            date_since = date.today() - timedelta(3) if date_since is None else date_since
+            date_until = date.today() - timedelta(4) if date_until is None else date_until
 
             insights_item = account.get_insights(
                 fields=[
@@ -197,8 +196,8 @@ def facebook_data(event):
                 params={
                     'level': 'ad',
                     # 'breakdowns': ['country'],
-                    'time_range': {'since': since,
-                                   'until': until},
+                    'time_range': {'since': date_since.strftime("%Y-%m-%d"),
+                                   'until': date_until.strftime("%Y-%m-%d")},
                     'time_increment': 1}, is_async=True)
 
             async_job = insights_item.api_get()
@@ -239,8 +238,8 @@ def facebook_data(event):
                 params={
                     'level': 'ad',
                     # 'breakdowns': ['country'],
-                    'time_range': {'since': since,
-                                   'until': until},
+                    'time_range': {'since': date_since.strftime("%Y-%m-%d"),
+                                   'until': date_until.strftime("%Y-%m-%d")},
                     'time_increment': 1})
             item.update({
                 'adset': adset_item
@@ -261,8 +260,8 @@ def facebook_data(event):
                 params={
                     'level': 'ad',
                     # 'breakdowns': ['country'],
-                    'time_range': {'since': since,
-                                   'until': until},
+                    'time_range': {'since': date_since.strftime("%Y-%m-%d"),
+                                   'until': date_until.strftime("%Y-%m-%d")},
                     'time_increment': 1})
             item.update({
                 'ad': ad_item
@@ -296,8 +295,8 @@ def facebook_data(event):
                 params={
                     'level': 'ad',
                     # 'breakdowns': ['country'],
-                    'time_range': {'since': since,
-                                   'until': until},
+                    'time_range': {'since': date_since.strftime("%Y-%m-%d"),
+                                   'until': date_until.strftime("%Y-%m-%d")},
                     'time_increment': 1})
             #
             item.update({
