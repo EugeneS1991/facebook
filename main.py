@@ -7,14 +7,14 @@ from facebook_business.adobjects.ad import Ad
 from facebook_business.adobjects.adcreative import AdCreative
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
-from bson.json_util import dumps, loads
+# from bson.json_util import dumps, loads
 from datetime import datetime, date, timedelta
 from credential import event
 import time
+import base64
 import logging
 
 logger = logging.getLogger()
-# from bson.json_util import dumps, loads
 schema_facebook_table = [
     bigquery.SchemaField("date", "DATE", mode="REQUIRED"),
     bigquery.SchemaField("date_start", "DATE", mode="REQUIRED"),
@@ -126,29 +126,32 @@ def insert_rows_json(bigquery_client, project_id, dataset_id, table_id, result):
 
 
 def facebook_data(event):
-    pubsub_massage = event['data']  # переделать на base64, чтоба забрать потом data pub sub https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
-    # bigquery_client = bigquery.Client()
-    GOOGLE_APPLICATION_CREDENTIALS = '/Projects/facebook_correct/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
-    bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
+    pubsub_massage = base64.b64decode(event['data']).decode('utf-8')  # переделать на base64, чтоба забрать потом data pub sub https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
+    bigquery_client = bigquery.Client()
+    # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/facebook_correct/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
+    # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
 
     if pubsub_massage == 'facebook_data':
-        access_token = event['attributes']['access_token']
-        account_id = event['attributes']['account_id']
-        app_id = event['attributes']['app_id']
-        app_secret = event['attributes']['app_secret']
-        api_version = event['attributes']['api_version']
-        project_id = event['attributes']['project_id']
-        dataset_id = event['attributes']['dataset_id']
-        table_id = event['attributes']['table_id']
-        date_since = event['attributes']['data_start']
-        date_until = event['attributes']['data_start']
+        access_token = event.get('attributes').get('access_token')
+        account_id = event.get('attributes').get('account_id')
+        app_id = event.get('attributes').get('app_id')
+        app_secret = event.get('attributes').get('app_secret')
+        api_version = event.get('attributes').get('api_version')
+        project_id = event.get('attributes').get('project_id')
+        dataset_id = event.get('attributes').get('dataset_id')
+        table_id = event.get('attributes').get('table_id')
+        date_since = event.get('attributes',{}).get('date_since')
+        date_until = event.get('attributes',{}).get('date_until')
         append_data_date = str(datetime.utcnow())
         try:
             FacebookAdsApi.init(app_id, app_secret, access_token, api_version=api_version)
 
             account = AdAccount('act_' + account_id)
-            date_since = date.today() - timedelta(3) if date_since is None else date_since
-            date_until = date.today() - timedelta(4) if date_until is None else date_until
+            date_since = date_since if date_since is not None else date.today() - timedelta(3)
+            date_until = date_until if date_until is not None else date.today() - timedelta(4)
+
+
+
 
             insights_item = account.get_insights(
                 fields=[
@@ -378,5 +381,3 @@ def facebook_data(event):
 
             return "ok", result
 
-
-print(facebook_data(event))
