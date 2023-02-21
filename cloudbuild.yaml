@@ -1,0 +1,14 @@
+steps:
+- name: 'gcr.io/google.com/cloud-builder/gcloud'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - facebook_data
+  - --region=europe-west1
+  - --trigger-topic=facebook_data
+  - --memory=1024MB
+  - --timeout=540s
+  - --runtime=python3.11
+  - --allow-unauthenticated
+  - --source=.

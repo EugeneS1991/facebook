@@ -125,7 +125,7 @@ def insert_rows_json(bigquery_client, project_id, dataset_id, table_id, result):
         logger.info("Encountered errors while inserting rows: {}".format(errors))
 
 
-def facebook_data(event):
+def facebook_data(event, context):
     pubsub_massage = base64.b64decode(event['data']).decode('utf-8')  # переделать на base64, чтоба забрать потом data pub sub https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
     bigquery_client = bigquery.Client()
     # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/facebook_correct/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
