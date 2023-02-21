@@ -9,6 +9,6 @@ steps:
   - --trigger-topic=facebook_data
   - --memory=1024MB
   - --timeout=540s
-  - --runtime=python3.11
+  - --runtime=python311
   - --allow-unauthenticated
   - --source=.
