@@ -25,7 +25,7 @@ schema_facebook_table = [
     bigquery.SchemaField("campaign_id", "INTEGER", mode="REQUIRED"),
     bigquery.SchemaField("campaign_name", "STRING", mode="REQUIRED"),
     bigquery.SchemaField("buying_type", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("objective", "STRING", mode="REQUIRED"),
+    bigquery.SchemaField("objective", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("ad_id", "INTEGER", mode="REQUIRED"),
     bigquery.SchemaField("ad_name", "STRING", mode="REQUIRED"),
     bigquery.SchemaField("ad_created_time", "DATE", mode="REQUIRED"),
@@ -33,19 +33,19 @@ schema_facebook_table = [
     bigquery.SchemaField("impressions", "INTEGER", mode="REQUIRED"),
     bigquery.SchemaField("reach", "INTEGER", mode="REQUIRED"),
     bigquery.SchemaField("spend", "FLOAT", mode="REQUIRED"),
-    bigquery.SchemaField("inline_link_clicks", "INTEGER", mode="REQUIRED"),
-    bigquery.SchemaField("inline_link_click_ctr", "FLOAT", mode="REQUIRED"),
-    bigquery.SchemaField("inline_post_engagement", "INTEGER", mode="REQUIRED"),
-    bigquery.SchemaField("social_spend", "FLOAT", mode="REQUIRED"),
-    bigquery.SchemaField("unique_clicks", "INTEGER", mode="REQUIRED"),
-    bigquery.SchemaField("unique_ctr", "FLOAT", mode="REQUIRED"),
-    bigquery.SchemaField("unique_inline_link_clicks", "INTEGER", mode="REQUIRED"),
-    bigquery.SchemaField("unique_inline_link_click_ctr", "FLOAT", mode="REQUIRED"),
-    bigquery.SchemaField("unique_link_clicks_ctr", "FLOAT", mode="REQUIRED"),
-    bigquery.SchemaField("quality_ranking", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("engagement_rate_ranking", "STRING", mode="REQUIRED"),
+    bigquery.SchemaField("inline_link_clicks", "INTEGER", mode="NULLABLE"),
+    bigquery.SchemaField("inline_link_click_ctr", "FLOAT", mode="NULLABLE"),
+    bigquery.SchemaField("inline_post_engagement", "INTEGER", mode="NULLABLE"),
+    bigquery.SchemaField("social_spend", "FLOAT", mode="NULLABLE"),
+    bigquery.SchemaField("unique_clicks", "INTEGER", mode="NULLABLE"),
+    bigquery.SchemaField("unique_ctr", "FLOAT", mode="NULLABLE"),
+    bigquery.SchemaField("unique_inline_link_clicks", "INTEGER", mode="NULLABLE"),
+    bigquery.SchemaField("unique_inline_link_click_ctr", "FLOAT", mode="NULLABLE"),
+    bigquery.SchemaField("unique_link_clicks_ctr", "FLOAT", mode="NULLABLE"),
+    bigquery.SchemaField("quality_ranking", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("engagement_rate_ranking", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("video_thruplay_watched_actions", "STRING", mode="NULLABLE"),
-    bigquery.SchemaField("conversion_rate_ranking", "STRING", mode="REQUIRED"),
+    bigquery.SchemaField("conversion_rate_ranking", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("conversion_values", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("adset", "RECORD", mode="REPEATED",
                          fields=[
@@ -76,8 +76,6 @@ schema_facebook_table = [
 ]
 
 clustering_field = ["campaign_id", "campaign_name"]
-
-
 def exist_dataset_table(client, project_id, dataset_id, table_id, schema_facebook_table,
                         clustering_field=None):
     try:
@@ -111,6 +109,7 @@ def exist_dataset_table(client, project_id, dataset_id, table_id, schema_faceboo
         table = client.create_table(table)
         logger.info("Created dataset {}.{}.{}".format(table.project, table.dataset_id, table.table_id))
         print("Created dataset {}.{}.{}".format(table.project, table.dataset_id, table.table_id))
+
     return "ok"
 
 def insert_rows_json(bigquery_client, project_id, dataset_id, table_id, result):
@@ -124,12 +123,9 @@ def insert_rows_json(bigquery_client, project_id, dataset_id, table_id, result):
         print("Encountered errors while inserting rows: {}".format(errors))
         logger.info("Encountered errors while inserting rows: {}".format(errors))
 
-
 def facebook_data(event, context):
-    pubsub_massage = base64.b64decode(event['data']).decode('utf-8')  # переделать на base64, чтоба забрать потом data pub sub https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
+    pubsub_massage = base64.b64decode(event['data']).decode('utf-8')  #https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
     bigquery_client = bigquery.Client()
-    # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/facebook_correct/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
-    # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
 
     if pubsub_massage == 'facebook_data':
         access_token = event.get('attributes').get('access_token')
@@ -140,18 +136,14 @@ def facebook_data(event, context):
         project_id = event.get('attributes').get('project_id')
         dataset_id = event.get('attributes').get('dataset_id')
         table_id = event.get('attributes').get('table_id')
-        date_since = event.get('attributes',{}).get('date_since')
-        date_until = event.get('attributes',{}).get('date_until')
+        date_since = event.get('attributes', {}).get('date_since')
+        date_until = event.get('attributes', {}).get('date_until')
         append_data_date = str(datetime.utcnow())
         try:
             FacebookAdsApi.init(app_id, app_secret, access_token, api_version=api_version)
-
             account = AdAccount('act_' + account_id)
             date_since = date_since if date_since is not None else date.today() - timedelta(3)
-            date_until = date_until if date_until is not None else date.today() - timedelta(4)
-
-
-
+            date_until = date_until if date_until is not None else date.today() - timedelta(3)
 
             insights_item = account.get_insights(
                 fields=[
@@ -204,13 +196,14 @@ def facebook_data(event, context):
                     'time_increment': 1}, is_async=True)
 
             async_job = insights_item.api_get()
-            while async_job[AdReportRun.Field.async_percent_completion] < 100:
+            while async_job[AdReportRun.Field.async_status] != 'Job Completed' or async_job[
+                AdReportRun.Field.async_percent_completion] < 100:
                 print(async_job[AdReportRun.Field.async_status])
                 time.sleep(1)
                 insights_item.api_get()
+            time.sleep(1)
             print(async_job[AdReportRun.Field.async_status])
             insights_item_list = insights_item.get_result()
-
 
         except Exception as e:
             logger.info(e)
@@ -227,7 +220,7 @@ def facebook_data(event, context):
                 AdSet.Field.name,
                 AdSet.Field.daily_budget,
                 AdSet.Field.optimization_goal,
-                AdSet.Field.promoted_object,
+                # AdSet.Field.promoted_object,
                 AdSet.Field.destination_type,
                 AdSet.Field.billing_event,
                 # AdSet.Field.attribution_spec,
@@ -269,7 +262,7 @@ def facebook_data(event, context):
             item.update({
                 'ad': ad_item
             })
-            #
+
             creative_id = item.get('ad').pop('creative').get('id')
             creative = AdCreative(fbid=creative_id)
             creative_item = creative.api_get(fields=[
@@ -290,7 +283,7 @@ def facebook_data(event, context):
                 AdCreative.Field.effective_object_story_id,
                 AdCreative.Field.product_set_id,
                 AdCreative.Field.template_url,
-                AdCreative.Field.object_story_spec,
+                # AdCreative.Field.object_story_spec,
                 AdCreative.Field.url_tags,
                 AdCreative.Field.link_deep_link_url,
                 AdCreative.Field.object_store_url
@@ -301,7 +294,6 @@ def facebook_data(event, context):
                     'time_range': {'since': date_since.strftime("%Y-%m-%d"),
                                    'until': date_until.strftime("%Y-%m-%d")},
                     'time_increment': 1})
-            #
             item.update({
                 'creative': creative_item
             })
@@ -326,7 +318,7 @@ def facebook_data(event, context):
             if 'creative' in item:
                 for key, value in item.pop('creative').items():
                     creative.append({'key': key, 'value': value})
-            #
+
             if 'actions' in item:
                 for value in item.pop('actions'):
                     actions.append({'key': value['action_type'], 'value': value['value']})
@@ -375,9 +367,7 @@ def facebook_data(event, context):
                 'append_data_date': append_data_date
             })
 
-            if exist_dataset_table(bigquery_client, project_id, dataset_id, table_id, schema_facebook_table,
-                                   clustering_field) == "ok":
-                insert_rows_json(bigquery_client, project_id, dataset_id, table_id, result)
-
-            return "ok"
-
+        if exist_dataset_table(bigquery_client, project_id, dataset_id, table_id, schema_facebook_table,
+                               clustering_field) == "ok":
+            insert_rows_json(bigquery_client, project_id, dataset_id, table_id, result)
+        return "ok"
