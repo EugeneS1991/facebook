@@ -1,0 +1,788 @@
+[
+  {
+    "name": "date_start",
+    "type": "DATE",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "date_stop",
+    "type": "DATE",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "account_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "account_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "account_currency",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "campaign_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "campaign_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "buying_type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "objective",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "ad_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "ad_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "created_time",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "clicks",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "impressions",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "reach",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "spend",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "actions",
+    "type": "record",
+    "mode": "repeated",
+    "fields": [
+      {
+        "name": "action_type",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "conversions",
+    "type": "record",
+    "mode": "repeated",
+    "fields": [
+      {
+        "name": "action_type",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "inline_link_clicks",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "inline_link_click_ctr",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "inline_post_engagement",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "social_spend",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "unique_clicks",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "unique_ctr",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "unique_inline_link_clicks",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "unique_inline_link_click_ctr",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "unique_link_clicks_ctr",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "quality_ranking",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "engagement_rate_ranking",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "conversion_rate_ranking",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "adset",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "daily_budget",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "optimization_goal",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "promoted_object",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "page_id",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "pixel_id",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "custom_event_type",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "custom_event_str",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "destination_type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "billing_event",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "attribution_spec",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "event_type",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "window_days",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "created_time",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "bid_strategy",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "start_time",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "end_time",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "targeting",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "age_max",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "age_min",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "custom_audiences",
+            "type": "record",
+            "mode": "repeated",
+            "fields": [
+              {
+                "name": "id",
+                "type": "INTEGER",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              }
+            ]
+          },
+          {
+            "name": "genders",
+            "type": "INTEGER",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "flexible_spec",
+            "type": "record",
+            "mode": "repeated",
+            "fields": [
+              {
+                "name": "interests",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              },
+              {
+                "name": "industries",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              },
+              {
+                "name": "work_positions",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "geo_locations",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "countries",
+                "type": "STRING",
+                "mode": "REPEATED"
+              },
+              {
+                "name": "location_types",
+                "type": "STRING",
+                "mode": "REPEATED"
+              }
+            ]
+          },
+          {
+            "name": "targeting_optimization",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "brand_safety_content_filter_levels",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "targeting_relaxation_types",
+            "type": "record",
+            "fields": [
+              {
+                "name": "lookalike",
+                "type": "string",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "custom_audience",
+                "type": "string",
+                "mode": "NULLABLE"
+              }
+            ]
+          },
+          {
+            "name": "publisher_platforms",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "facebook_positions",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "device_platforms",
+            "type": "STRING",
+            "mode": "REPEATED"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ad",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "created_time",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "bid_type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "status",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "targeting",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "age_max",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "age_min",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "custom_audiences",
+            "type": "record",
+            "mode": "repeated",
+            "fields": [
+              {
+                "name": "id",
+                "type": "INTEGER",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              }
+            ]
+          },
+          {
+            "name": "targeting_relaxation_types",
+            "type": "record",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "lookalike",
+                "type": "string",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "custom_audience",
+                "type": "string",
+                "mode": "NULLABLE"
+              }
+            ]
+          },
+          {
+            "name": "genders",
+            "type": "INTEGER",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "flexible_spec",
+            "type": "record",
+            "mode": "repeated",
+            "fields": [
+              {
+                "name": "interests",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              },
+              {
+                "name": "industries",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              },
+              {
+                "name": "work_positions",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "geo_locations",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "countries",
+                "type": "STRING",
+                "mode": "REPEATED"
+              },
+              {
+                "name": "location_types",
+                "type": "STRING",
+                "mode": "REPEATED"
+              }
+            ]
+          },
+          {
+            "name": "targeting_optimization",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "brand_safety_content_filter_levels",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "publisher_platforms",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "facebook_positions",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "device_platforms",
+            "type": "STRING",
+            "mode": "REPEATED"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "creative",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "body",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "call_to_action_type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "instagram_actor_id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "instagram_permalink_url",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "instagram_story_id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "object_story_id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "link_og_id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "object_type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "effective_object_story_id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "object_story_spec",
+        "type": "RECORD",
+        "mode": "repeated",
+        "fields": [
+          {
+            "name": "page_id",
+            "type": "STRING"
+          },
+          {
+            "name": "link_data",
+            "type": "record",
+            "fields": [
+              {
+                "name": "link",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "message",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "attachment_style",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "image_hash",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "call_to_action",
+                "type": "record",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "type",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "value",
+                    "type": "record",
+                    "mode": "NULLABLE",
+                    "fields": [
+                      {
+                        "name": "page",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "child_attachments",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "link",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "image_hash",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "call_to_action",
+                    "type": "record",
+                    "mode": "NULLABLE",
+                    "fields": [
+                      {
+                        "name": "type",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "multi_share_end_card",
+                "type": "BOOLEAN",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "multi_share_optimized",
+                "type": "BOOLEAN",
+                "mode": "NULLABLE"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "_rowIds",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "insert_at_utc",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  }
+]
