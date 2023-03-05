@@ -226,8 +226,8 @@ def fetch_data(event, context):
     access_token = event.get('attributes').get('access_token')
     api_version = event.get('attributes').get('api_version')
     account_id = event.get('attributes').get('account_id')
-    date_since = event.get('attributes').get('date_since',{})
-    date_until = event.get('attributes').get('date_until',{})
+    date_since = event.get('attributes').get('date_since')
+    date_until = event.get('attributes').get('date_until')
     # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/connectors/credentials/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
     # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
     bigquery_client = bigquery.Client()
