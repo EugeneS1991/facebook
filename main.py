@@ -13,7 +13,7 @@ import json
 import jsons
 import logging
 import uuid
-from credential import event
+# from credential import event
 logger = logging.getLogger()
 
 # def schema():
