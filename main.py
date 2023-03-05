@@ -216,6 +216,7 @@ def add_data(app_id, app_secret, access_token, api_version, account_id, date_sin
     return result
 
 def fetch_data(event, context):
+    pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
     access_token = event.get('attributes').get('access_token')
     project_id = event.get('attributes').get('project_id')
     dataset_id = event.get('attributes').get('dataset_id')
