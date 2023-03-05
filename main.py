@@ -54,8 +54,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
     try:
         FacebookAdsApi.init(app_id, app_secret, access_token, api_version=api_version)
         account = AdAccount('act_' + account_id)
-        date_since = date_since if date_since is not None else date.today() - timedelta(3)
-        date_until = date_until if date_until is not None else date.today() - timedelta(3)
+        date_since = date_since if date_since is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
+        date_until = date_until if date_until is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
 
         insights_item = account.get_insights(
             fields=[
@@ -102,8 +102,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
             ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since.strftime("%Y-%m-%d"),
-                               'until': date_until.strftime("%Y-%m-%d")},
+                'time_range': {'since': date_since,
+                               'until': date_until},
                 'time_increment': 1}, is_async=True)
 
         async_job = insights_item.api_get()
@@ -141,8 +141,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since.strftime("%Y-%m-%d"),
-                               'until': date_until.strftime("%Y-%m-%d")},
+                'time_range': {'since': date_since,
+                               'until': date_until},
                 'time_increment': 1})
         item.update({
             'adset': adset_item
@@ -162,8 +162,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since.strftime("%Y-%m-%d"),
-                               'until': date_until.strftime("%Y-%m-%d")},
+                'time_range': {'since': date_since,
+                               'until': date_until},
                 'time_increment': 1})
         item.update({
             'ad': ad_item
@@ -195,8 +195,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since.strftime("%Y-%m-%d"),
-                               'until': date_until.strftime("%Y-%m-%d")},
+                'time_range': {'since': date_since,
+                               'until': date_until},
                 'time_increment': 1})
         item.update({
             'creative': creative_item
