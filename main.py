@@ -7,7 +7,6 @@ from facebook_business.adobjects.ad import Ad
 from facebook_business.adobjects.adcreative import AdCreative
 from google.cloud import bigquery
 from datetime import datetime, date, timedelta
-from credential import event
 import time
 import base64
 import json
