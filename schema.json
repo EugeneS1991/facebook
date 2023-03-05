@@ -90,7 +90,7 @@
       },
       {
         "name": "value",
-        "type": "STRING"
+        "type": "INTEGER"
       }
     ]
   },
@@ -170,6 +170,23 @@
     "mode": "NULLABLE"
   },
   {
+    "name": "video_thruplay_watched_actions",
+    "type": "record",
+    "mode": "repeated",
+    "fields": [
+      {
+        "name": "value",
+        "type": "INTEGER",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "action_type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  {
     "name": "adset",
     "type": "RECORD",
     "mode": "NULLABLE",
@@ -186,7 +203,7 @@
       },
       {
         "name": "daily_budget",
-        "type": "STRING",
+        "type": "INTEGER",
         "mode": "NULLABLE"
       },
       {
@@ -432,7 +449,7 @@
     "fields": [
       {
         "name": "id",
-        "type": "STRING",
+        "type": "INTEGER",
         "mode": "NULLABLE"
       },
       {
@@ -620,7 +637,7 @@
     "fields": [
       {
         "name": "id",
-        "type": "STRING",
+        "type": "INTEGER",
         "mode": "NULLABLE"
       },
       {
@@ -630,6 +647,11 @@
       },
       {
         "name": "body",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "url_tags",
         "type": "STRING",
         "mode": "NULLABLE"
       },

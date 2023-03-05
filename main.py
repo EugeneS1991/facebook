@@ -13,22 +13,21 @@ import json
 import jsons
 import logging
 import uuid
-
+from credential import event
 logger = logging.getLogger()
 
-def schema():
-    with open('schema.json', 'r') as f:
-        schema = json.load(f)
-    return schema
+# def schema():
+#     with open('schema.json', 'r') as f:
+#         schema = json.load(f)
+#     return schema
 
 def load_table_from_json(bigquery_client, row_to_insert_df, project_id, dataset_id, table_id):
     job_config = bigquery.LoadJobConfig(
-        autodetect=False,
+        autodetect=True,
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-        schema=schema(),
+        # schema=schema(),
         write_disposition='WRITE_APPEND',
-        schema_update_options=[bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION],
-        # add column to table if this columt do not exist in table but need add this column to schema
+        schema_update_options=[bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION],# add column to table if this columt do not exist in table but need add this column to schema
         time_partitioning=bigquery.TimePartitioning(field="date_start"),
         clustering_fields=["campaign_id", "campaign_name"]
         # ignore_unknown_values=True
@@ -232,6 +231,8 @@ def fetch_data(event, context):
     # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
     bigquery_client = bigquery.Client()
     row_to_insert = add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
+    # print(row_to_insert)
     load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
+# fetch_data(event, '1')
