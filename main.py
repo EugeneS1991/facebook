@@ -103,8 +103,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
             ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since,
-                               'until': date_until},
+                'time_range': {'since': date_since.strftime("%Y-%m-%d"),
+                               'until': date_until.strftime("%Y-%m-%d")},
                 'time_increment': 1}, is_async=True)
 
         async_job = insights_item.api_get()
@@ -142,8 +142,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since,
-                               'until': date_until},
+                'time_range': {'since': date_since.strftime("%Y-%m-%d"),
+                               'until': date_until.strftime("%Y-%m-%d")},
                 'time_increment': 1})
         item.update({
             'adset': adset_item
@@ -163,8 +163,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since,
-                               'until': date_until},
+                'time_range': {'since': date_since.strftime("%Y-%m-%d"),
+                               'until': date_until.strftime("%Y-%m-%d")},
                 'time_increment': 1})
         item.update({
             'ad': ad_item
@@ -196,8 +196,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since,
-                               'until': date_until},
+                'time_range': {'since': date_since.strftime("%Y-%m-%d"),
+                               'until': date_until.strftime("%Y-%m-%d")},
                 'time_increment': 1})
         item.update({
             'creative': creative_item
