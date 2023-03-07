@@ -11,4 +11,6 @@ steps:
   - --timeout=540s
   - --runtime=python311
   - --allow-unauthenticated
+  - --max-instances = 0
+  - --max-instances = 1
   - --source=.
