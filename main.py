@@ -13,7 +13,7 @@ import json
 import jsons
 import logging
 import uuid
-from credential import event
+# from credential import event
 logger = logging.getLogger()
 
 # def schema():
@@ -251,4 +251,4 @@ def attributes(event, context):
     load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
-attributes(event, '1')
+# attributes(event, '1')
