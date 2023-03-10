@@ -13,7 +13,7 @@ import json
 import jsons
 import logging
 import uuid
-# from credential import event
+from credential import event
 logger = logging.getLogger()
 
 # def schema():
@@ -50,12 +50,18 @@ def load_table_from_json(bigquery_client, row_to_insert_df, project_id, dataset_
 
     return "ok"
 
-def facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
+
+def daterange(date_since, date_until):
+    date_since = datetime.strptime(date_since,"%Y-%m-%d").date()
+    date_until = datetime.strptime(date_until,"%Y-%m-%d").date()
+    for n in range(int((date_until - date_since).days)):
+        yield (date_since + timedelta(n)).strftime("%Y-%m-%d")
+
+def facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range):
+
     try:
         FacebookAdsApi.init(app_id, app_secret, access_token, api_version=api_version)
         account = AdAccount('act_' + account_id)
-        date_since = date_since if date_since is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
-        date_until = date_until if date_until is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
 
         insights_item = account.get_insights(
             fields=[
@@ -102,8 +108,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
             ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since,
-                               'until': date_until},
+                'time_range': {'since': date_range,
+                               'until': date_range},
                 'time_increment': 1}, is_async=True)
 
         async_job = insights_item.api_get()
@@ -141,8 +147,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since,
-                               'until': date_until},
+                'time_range': {'since': date_range,
+                               'until': date_range},
                 'time_increment': 1})
         item.update({
             'adset': adset_item
@@ -162,8 +168,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since,
-                               'until': date_until},
+                'time_range': {'since': date_range,
+                               'until': date_range},
                 'time_increment': 1})
         item.update({
             'ad': ad_item
@@ -195,8 +201,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         ],
             params={
                 'level': 'ad',
-                'time_range': {'since': date_since,
-                               'until': date_until},
+                'time_range': {'since': date_range,
+                               'until': date_range},
                 'time_increment': 1})
         item.update({
             'creative': creative_item
@@ -205,16 +211,27 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
 
     return jsons.dump(insights_item_result)
 
+def get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
+
+    if date_since != date_until:
+        for date_range in daterange(date_since, date_until):
+            events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
+            return events
+    else:
+        events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since)
+        return events
+
 def add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
-    events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
     result = []
+    events = get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
     for value in events:
         rowIds = str(uuid.uuid4())
         insert_at_utc = str(datetime.utcnow())
-        result.append(value | {'_rowIds': rowIds} | {'insert_at_utc': insert_at_utc})
+        result.append(value | {'_rowIds': rowIds} | {'_insertAtUtc': insert_at_utc})
     return result
 
-def fetch_data(event, context):
+
+def attributes(event, context):
     pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
     access_token = event.get('attributes').get('access_token')
     project_id = event.get('attributes').get('project_id')
@@ -225,14 +242,13 @@ def fetch_data(event, context):
     access_token = event.get('attributes').get('access_token')
     api_version = event.get('attributes').get('api_version')
     account_id = event.get('attributes').get('account_id')
-    date_since = event.get('attributes').get('date_since')
-    date_until = event.get('attributes').get('date_until')
+    date_since = event.get('attributes').get('date_since') if event.get('attributes').get('date_since') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
+    date_until = event.get('attributes').get('date_until') if event.get('attributes').get('date_until') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
     # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/connectors/credentials/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
     # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
     bigquery_client = bigquery.Client()
     row_to_insert = add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
-    # print(row_to_insert)
     load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
-# fetch_data(event, '1')
+attributes(event, '1')
