@@ -13,8 +13,10 @@ import json
 import jsons
 import logging
 import uuid
+
 # from credential import event
 logger = logging.getLogger()
+
 
 # def schema():
 #     with open('schema.json', 'r') as f:
@@ -27,7 +29,8 @@ def load_table_from_json(bigquery_client, row_to_insert_df, project_id, dataset_
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
         # schema=schema(),
         write_disposition='WRITE_APPEND',
-        schema_update_options=[bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION],# add column to table if this columt do not exist in table but need add this column to schema
+        schema_update_options=[bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION],
+        # add column to table if this columt do not exist in table but need add this column to schema
         time_partitioning=bigquery.TimePartitioning(field="date_start"),
         clustering_fields=["campaign_id", "campaign_name"]
         # ignore_unknown_values=True
@@ -52,13 +55,13 @@ def load_table_from_json(bigquery_client, row_to_insert_df, project_id, dataset_
 
 
 def daterange(date_since, date_until):
-    date_since = datetime.strptime(date_since,"%Y-%m-%d").date()
-    date_until = datetime.strptime(date_until,"%Y-%m-%d").date()
+    date_since = datetime.strptime(date_since, "%Y-%m-%d").date()
+    date_until = datetime.strptime(date_until, "%Y-%m-%d").date()
     for n in range(int((date_until - date_since).days)):
         yield (date_since + timedelta(n)).strftime("%Y-%m-%d")
 
-def facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range):
 
+def facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range):
     try:
         FacebookAdsApi.init(app_id, app_secret, access_token, api_version=api_version)
         account = AdAccount('act_' + account_id)
@@ -113,13 +116,12 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
                 'time_increment': 1}, is_async=True)
 
         async_job = insights_item.api_get()
-        while async_job[AdReportRun.Field.async_status] != 'Job Completed' or async_job[
-            AdReportRun.Field.async_percent_completion] < 100:
-            print(async_job[AdReportRun.Field.async_status])
+        while async_job[AdReportRun.Field.async_status] != 'Job Completed' or async_job[AdReportRun.Field.async_percent_completion] < 100:
+            # print(async_job[AdReportRun.Field.async_status])
             time.sleep(1)
             insights_item.api_get()
         time.sleep(1)
-        print(async_job[AdReportRun.Field.async_status])
+        # print(async_job[AdReportRun.Field.async_status])
         insights_item_list = insights_item.get_result()
 
     except Exception as e:
@@ -127,7 +129,6 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         print(e)
         raise
 
-    insights_item_result = []
     for item in insights_item_list:
         adset_id = item.pop("adset_id")
         ad_id = item.get("ad_id")
@@ -163,7 +164,7 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
             Ad.Field.bid_type,
             Ad.Field.adlabels,
             Ad.Field.status,
-            # Ad.Field.targeting,
+            Ad.Field.targeting,
             Ad.Field.creative
         ],
             params={
@@ -194,7 +195,7 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
             AdCreative.Field.effective_object_story_id,
             AdCreative.Field.product_set_id,
             AdCreative.Field.template_url,
-            # AdCreative.Field.object_story_spec,
+            AdCreative.Field.object_story_spec,
             AdCreative.Field.url_tags,
             AdCreative.Field.link_deep_link_url,
             AdCreative.Field.object_store_url
@@ -207,19 +208,24 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         item.update({
             'creative': creative_item
         })
-        insights_item_result.append(item)
 
-    return jsons.dump(insights_item_result)
+        return item
+
 
 def get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
-
+    result = []
     if date_since != date_until:
         for date_range in daterange(date_since, date_until):
+            print("Fatch start date {}".format(date_range))
+            logging.info("Fatch start date {}".format(date_range))
             events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
-            return events
+            result.append(events)
+        return jsons.dump(result)
     else:
         events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since)
-        return events
+        result.append(events)
+        return jsons.dump(result)
+
 
 def add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
     result = []
@@ -231,7 +237,7 @@ def add_data(app_id, app_secret, access_token, api_version, account_id, date_sin
     return result
 
 
-def attributes(event, context):
+def insert_data(event, context):
     pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
     access_token = event.get('attributes').get('access_token')
     project_id = event.get('attributes').get('project_id')
@@ -242,8 +248,10 @@ def attributes(event, context):
     access_token = event.get('attributes').get('access_token')
     api_version = event.get('attributes').get('api_version')
     account_id = event.get('attributes').get('account_id')
-    date_since = event.get('attributes').get('date_since') if event.get('attributes').get('date_since') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
-    date_until = event.get('attributes').get('date_until') if event.get('attributes').get('date_until') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
+    date_since = event.get('attributes').get('date_since') if event.get('attributes').get(
+        'date_since') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
+    date_until = event.get('attributes').get('date_until') if event.get('attributes').get(
+        'date_until') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
     # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/connectors/credentials/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
     # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
     bigquery_client = bigquery.Client()
