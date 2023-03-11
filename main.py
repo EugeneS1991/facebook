@@ -13,7 +13,6 @@ import json
 import jsons
 import logging
 import uuid
-
 # from credential import event
 logger = logging.getLogger()
 
@@ -128,7 +127,7 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         logger.info(e)
         print(e)
         raise
-
+    insights_item_result = []
     for item in insights_item_list:
         adset_id = item.pop("adset_id")
         ad_id = item.get("ad_id")
@@ -208,8 +207,8 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         item.update({
             'creative': creative_item
         })
-
-        return item
+        insights_item_result.append(item)
+        return jsons.dump(insights_item_result)
 
 
 def get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
@@ -219,13 +218,14 @@ def get_data(app_id, app_secret, access_token, api_version, account_id, date_sin
             print("Fatch start date {}".format(date_range))
             logging.info("Fatch start date {}".format(date_range))
             events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
-            result.append(events)
-        return jsons.dump(result)
+            for item in events:
+                result.append(item)
+        return result
     else:
         events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since)
-        result.append(events)
-        return jsons.dump(result)
-
+        for item in events:
+            result.append(item)
+        return result
 
 def add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
     result = []
@@ -235,7 +235,6 @@ def add_data(app_id, app_secret, access_token, api_version, account_id, date_sin
         insert_at_utc = str(datetime.utcnow())
         result.append(value | {'_rowIds': rowIds} | {'_insertAtUtc': insert_at_utc})
     return result
-
 
 def insert_data(event, context):
     pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
@@ -256,7 +255,8 @@ def insert_data(event, context):
     # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
     bigquery_client = bigquery.Client()
     row_to_insert = add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
+    print(row_to_insert)
     load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
-# attributes(event, '1')
+# insert_data(event, '1')
