@@ -218,13 +218,17 @@ def get_data(app_id, app_secret, access_token, api_version, account_id, date_sin
             print("Fatch start date {}".format(date_range))
             logging.info("Fatch start date {}".format(date_range))
             events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
-            for item in events:
-                result.append(item)
+            if events:
+                for item in events:
+                    result.append(item)
+
         return result
     else:
         events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since)
-        for item in events:
-            result.append(item)
+        print(events)
+        if events:
+            for item in events:
+                result.append(item)
         return result
 
 def add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
@@ -255,7 +259,7 @@ def insert_data(event, context):
     # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
     bigquery_client = bigquery.Client()
     row_to_insert = add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
-    print(row_to_insert)
+    # print(row_to_insert)
     load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
