@@ -127,6 +127,7 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         logger.info(e)
         print(e)
         raise
+
     insights_item_result = []
     for item in insights_item_list:
         adset_id = item.pop("adset_id")
@@ -208,7 +209,7 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
             'creative': creative_item
         })
         insights_item_result.append(item)
-        return jsons.dump(insights_item_result)
+    return jsons.dump(insights_item_result)
 
 
 def get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
