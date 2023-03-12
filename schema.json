@@ -803,7 +803,7 @@
     "mode": "NULLABLE"
   },
   {
-    "name": "insert_at_utc",
+    "name": "_insertAtUtc",
     "type": "TIMESTAMP",
     "mode": "NULLABLE"
   }
