@@ -243,26 +243,27 @@ def add_data(app_id, app_secret, access_token, api_version, account_id, date_sin
 
 def insert_data(event, context):
     pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
-    access_token = event.get('attributes').get('access_token')
-    project_id = event.get('attributes').get('project_id')
-    dataset_id = event.get('attributes').get('dataset_id')
-    table_id = event.get('attributes').get('table_id')
-    app_id = event.get('attributes').get('app_id')
-    app_secret = event.get('attributes').get('app_secret')
-    access_token = event.get('attributes').get('access_token')
-    api_version = event.get('attributes').get('api_version')
-    account_id = event.get('attributes').get('account_id')
-    date_since = event.get('attributes').get('date_since') if event.get('attributes').get(
-        'date_since') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
-    date_until = event.get('attributes').get('date_until') if event.get('attributes').get(
-        'date_until') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
-    # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/connectors/credentials/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
-    # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
-    bigquery_client = bigquery.Client()
-    row_to_insert = add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
-    print(row_to_insert)
-    # logging.info(row_to_insert)
-    load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
+    if pubsub_massage == 'facebook_data':
+        access_token = event.get('attributes').get('access_token')
+        project_id = event.get('attributes').get('project_id')
+        dataset_id = event.get('attributes').get('dataset_id')
+        table_id = event.get('attributes').get('table_id')
+        app_id = event.get('attributes').get('app_id')
+        app_secret = event.get('attributes').get('app_secret')
+        access_token = event.get('attributes').get('access_token')
+        api_version = event.get('attributes').get('api_version')
+        account_id = event.get('attributes').get('account_id')
+        date_since = event.get('attributes').get('date_since') if event.get('attributes').get(
+            'date_since') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
+        date_until = event.get('attributes').get('date_until') if event.get('attributes').get(
+            'date_until') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
+        # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/connectors/credentials/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
+        # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
+        bigquery_client = bigquery.Client()
+        row_to_insert = add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
+        print(row_to_insert)
+        # logging.info(row_to_insert)
+        load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
 # insert_data(event, '1')
