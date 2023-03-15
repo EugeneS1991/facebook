@@ -507,7 +507,7 @@
           {
             "name": "instagram_positions",
             "type": "STRING",
-            "mode": "NULLABLE"
+            "mode": "repeated"
           },
           {
             "name": "custom_audiences",
