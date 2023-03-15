@@ -505,6 +505,11 @@
             ]
           },
           {
+            "name": "instagram_positions",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
             "name": "custom_audiences",
             "type": "record",
             "mode": "repeated",
