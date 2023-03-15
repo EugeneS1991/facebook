@@ -11,7 +11,7 @@ import time
 import base64
 import json
 import jsons
-import logging
+# import logging
 import uuid
 # from credential import event
 # logger = logging.getLogger()
@@ -52,11 +52,8 @@ def load_table_from_json(bigquery_client, row_to_insert_df, project_id, dataset_
 
 
 def daterange(date_since, date_until):
-
     date_since = (date.today() - timedelta(3)) if date_since is None else datetime.strptime(date_since, "%Y-%m-%d").date()
-    print(date_since)
     date_until = (date.today() - timedelta(2)) if date_until is None else datetime.strptime(date_until, "%Y-%m-%d").date()
-    print(date_until)
     for n in range(int((date_until - date_since).days)):
         date_range = (date_since + timedelta(n))
         print("Fatch start date {}".format(date_range))
@@ -122,7 +119,7 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
             time.sleep(1)
             insights_item.api_get()
         time.sleep(1)
-        # print(async_job[AdReportRun.Field.async_status])
+        print(async_job[AdReportRun.Field.async_status])
         insights_item_list = insights_item.get_result()
 
     except Exception as e:
@@ -210,32 +207,16 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
             'creative': creative_item
         })
         insights_item_result.append(item)
-    return jsons.dump(insights_item_result)
+    # print(jsons.dump(insights_item_result))
+    yield jsons.dump(insights_item_result)
 
 
 def get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
     for date_range in daterange(date_since, date_until):
         events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
         if events:
-            yield events
-
-    # if date_since != date_until:
-    #     for date_range in daterange(date_since, date_until):
-    #         print("Fatch start date {}".format(date_range))
-    #         logging.info("Fatch start date {}".format(date_range))
-    #         events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
-    #         if events:
-    #             for item in events:
-    #                 result.append(item)
-    #
-    #     return result
-    # else:
-    #     events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since)
-    #     print(events)
-    #     if events:
-    #         for item in events:
-    #             result.append(item)
-    #     return result
+            for item in events:
+                yield (item)
 
 def add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
     for events in get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):

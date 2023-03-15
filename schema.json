@@ -488,6 +488,23 @@
             "mode": "NULLABLE"
           },
           {
+            "name": "excluded_custom_audiences",
+            "type": "record",
+            "mode": "repeated",
+            "fields": [
+              {
+                "name": "id",
+                "type": "INTEGER",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              }
+            ]
+          },
+          {
             "name": "custom_audiences",
             "type": "record",
             "mode": "repeated",
@@ -598,8 +615,40 @@
                 "name": "location_types",
                 "type": "STRING",
                 "mode": "REPEATED"
+              },
+              {
+                "name": "custom_locations",
+                "type": "RECORD",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "custom_type",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "min_population",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "max_population",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "country",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
               }
             ]
+          },
+          {
+            "name": "locales",
+            "type": "INTEGER",
+            "mode": "repeated"
           },
           {
             "name": "targeting_optimization",
@@ -702,7 +751,11 @@
         "fields": [
           {
             "name": "page_id",
-            "type": "STRING"
+            "type": "INTEGER"
+          },
+          {
+            "name": "instagram_actor_id",
+            "type": "INTEGER"
           },
           {
             "name": "link_data",
@@ -719,7 +772,22 @@
                 "mode": "NULLABLE"
               },
               {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "caption",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
                 "name": "attachment_style",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "description",
                 "type": "STRING",
                 "mode": "NULLABLE"
               },
@@ -751,6 +819,21 @@
                     ]
                   }
                 ]
+              },
+              {
+                "name": "event_id",
+                "type": "INTEGER",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "picture",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "use_flexible_image_aspect_ratio",
+                "type": "BOOLEAN",
+                "mode": "NULLABLE"
               },
               {
                 "name": "child_attachments",
