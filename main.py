@@ -14,7 +14,7 @@ import jsons
 import logging
 import uuid
 # from credential import event
-logger = logging.getLogger()
+# logger = logging.getLogger()
 
 
 def schema():
@@ -41,24 +41,26 @@ def load_table_from_json(bigquery_client, row_to_insert_df, project_id, dataset_
     try:
         result = load_job.result()
         print("Loaded job {}".format(result))
-        logger.info("Loaded Job {}".format(result))
 
     except:
         err = 0
         for error in load_job.errors:
             err += 1
             print("Error load job {}: {}".format(err, error))
-            logger.info("Error load job {}: {}".format(err, error))
 
     return "ok"
 
 
 def daterange(date_since, date_until):
-    date_since = datetime.strptime(date_since, "%Y-%m-%d").date()
-    date_until = datetime.strptime(date_until, "%Y-%m-%d").date()
-    for n in range(int((date_until - date_since).days)):
-        yield (date_since + timedelta(n)).strftime("%Y-%m-%d")
 
+    date_since = (date.today() - timedelta(3)) if date_since is None else datetime.strptime(date_since, "%Y-%m-%d").date()
+    print(date_since)
+    date_until = (date.today() - timedelta(2)) if date_until is None else datetime.strptime(date_until, "%Y-%m-%d").date()
+    print(date_until)
+    for n in range(int((date_until - date_since).days)):
+        date_range = (date_since + timedelta(n))
+        print("Fatch start date {}".format(date_range))
+        yield date_range.strftime('%Y-%m-%d')
 
 def facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range):
     try:
@@ -124,7 +126,6 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         insights_item_list = insights_item.get_result()
 
     except Exception as e:
-        logger.info(e)
         print(e)
         raise
 
@@ -213,36 +214,41 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
 
 
 def get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
-    result = []
-    if date_since != date_until:
-        for date_range in daterange(date_since, date_until):
-            print("Fatch start date {}".format(date_range))
-            logging.info("Fatch start date {}".format(date_range))
-            events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
-            if events:
-                for item in events:
-                    result.append(item)
-
-        return result
-    else:
-        events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since)
-        print(events)
+    for date_range in daterange(date_since, date_until):
+        events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
         if events:
-            for item in events:
-                result.append(item)
-        return result
+            yield events
+
+    # if date_since != date_until:
+    #     for date_range in daterange(date_since, date_until):
+    #         print("Fatch start date {}".format(date_range))
+    #         logging.info("Fatch start date {}".format(date_range))
+    #         events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
+    #         if events:
+    #             for item in events:
+    #                 result.append(item)
+    #
+    #     return result
+    # else:
+    #     events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_since)
+    #     print(events)
+    #     if events:
+    #         for item in events:
+    #             result.append(item)
+    #     return result
 
 def add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
-    result = []
-    events = get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
-    for value in events:
-        rowIds = str(uuid.uuid4())
-        insert_at_utc = str(datetime.utcnow())
-        result.append(value | {'_rowIds': rowIds} | {'_insertAtUtc': insert_at_utc})
-    return result
+    for events in get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
+        result = []
+        for value in events:
+            row_ids = str(uuid.uuid4())
+            inserted_at_utc = str(datetime.utcnow())
+            result.append(value | {'_row_ids': row_ids} | {'_inserted_at_utc': inserted_at_utc})
+        yield result
 
 def insert_data(event, context):
     pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
+    # pubsub_massage = event.get('data')
     if pubsub_massage == 'facebook_data':
         access_token = event.get('attributes').get('access_token')
         project_id = event.get('attributes').get('project_id')
@@ -253,17 +259,14 @@ def insert_data(event, context):
         access_token = event.get('attributes').get('access_token')
         api_version = event.get('attributes').get('api_version')
         account_id = event.get('attributes').get('account_id')
-        date_since = event.get('attributes').get('date_since') if event.get('attributes').get(
-            'date_since') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
-        date_until = event.get('attributes').get('date_until') if event.get('attributes').get(
-            'date_until') is not None else (date.today() - timedelta(3)).strftime("%Y-%m-%d")
+        date_since = event.get('attributes').get('date_since')
+        date_until = event.get('attributes').get('date_until')
         # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/connectors/credentials/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
         # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
         bigquery_client = bigquery.Client()
-        row_to_insert = add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until)
-        print(row_to_insert)
-        # logging.info(row_to_insert)
-        load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
+
+        for row_to_insert in add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
+            load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
 # insert_data(event, '1')

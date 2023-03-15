@@ -798,12 +798,12 @@
     ]
   },
   {
-    "name": "_rowIds",
+    "name": "_row_ids",
     "type": "STRING",
     "mode": "NULLABLE"
   },
   {
-    "name": "_insertAtUtc",
+    "name": "_inserted_at_utc",
     "type": "TIMESTAMP",
     "mode": "NULLABLE"
   }
