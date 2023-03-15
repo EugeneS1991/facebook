@@ -115,7 +115,7 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
 
         async_job = insights_item.api_get()
         while async_job[AdReportRun.Field.async_status] != 'Job Completed' or async_job[AdReportRun.Field.async_percent_completion] < 100:
-            # print(async_job[AdReportRun.Field.async_status])
+            print(async_job[AdReportRun.Field.async_status])
             time.sleep(1)
             insights_item.api_get()
         time.sleep(1)
