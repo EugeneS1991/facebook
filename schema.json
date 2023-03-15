@@ -510,6 +510,16 @@
             "mode": "repeated"
           },
           {
+            "name": "messenger_positions",
+            "type": "STRING",
+            "mode": "repeated"
+          },
+          {
+            "name": "audience_network_positions",
+            "type": "STRING",
+            "mode": "repeated"
+          },
+          {
             "name": "custom_audiences",
             "type": "record",
             "mode": "repeated",
@@ -847,6 +857,11 @@
                 "fields": [
                   {
                     "name": "link",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "name",
                     "type": "STRING",
                     "mode": "NULLABLE"
                   },
