@@ -766,15 +766,69 @@
         "fields": [
           {
             "name": "page_id",
-            "type": "INTEGER"
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "video_data",
+            "type": "record",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "call_to_action",
+                "type": "record",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "type",
+                    "mode": "NULLABLE",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "record",
+                    "mode": "NULLABLE",
+                    "fields": [
+                      {
+                        "name": "link",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "image_hash",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "image_url",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "message",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "video_id",
+                "type": "INTEGER",
+                "mode": "NULLABLE"
+              }
+            ]
           },
           {
             "name": "instagram_actor_id",
-            "type": "INTEGER"
+            "type": "INTEGER",
+            "mode": "NULLABLE"
           },
           {
             "name": "link_data",
             "type": "record",
+            "mode": "NULLABLE",
             "fields": [
               {
                 "name": "link",
