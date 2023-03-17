@@ -598,6 +598,23 @@
                 ]
               },
               {
+                "name": "education_majors",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              },
+              {
                 "name": "work_positions",
                 "type": "record",
                 "mode": "repeated",
