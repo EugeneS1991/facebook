@@ -12,9 +12,9 @@ import base64
 import json
 import jsons
 # import logging
-# from pprint import pprint
+from pprint import pprint
 import uuid
-# from credential import event
+from credential import event
 # logger = logging.getLogger()
 
 
@@ -234,8 +234,8 @@ def add_data(app_id, app_secret, access_token, api_version, account_id, date_sin
         yield result
 
 def insert_data(event, context):
-    pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
-    # pubsub_massage = event.get('data')
+    # pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
+    pubsub_massage = event.get('data')
     if pubsub_massage == 'facebook_data':
         access_token = event.get('attributes').get('access_token')
         project_id = event.get('attributes').get('project_id')
@@ -248,13 +248,13 @@ def insert_data(event, context):
         account_id = event.get('attributes').get('account_id')
         date_since = event.get('attributes').get('date_since')
         date_until = event.get('attributes').get('date_until')
-        # GOOGLE_APPLICATION_CREDENTIALS = '/Projects/connectors/credentials/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
-        # bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
-        bigquery_client = bigquery.Client()
+        GOOGLE_APPLICATION_CREDENTIALS = '/Projects/connectors/credentials/or2-msq-epm-plx1-t1iylu-01927efe0aef.json'
+        bigquery_client = bigquery.Client.from_service_account_json(GOOGLE_APPLICATION_CREDENTIALS)
+        # bigquery_client = bigquery.Client()
 
         for row_to_insert in add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
-            # pprint(row_to_insert)
+            pprint(row_to_insert)
             load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
-# insert_data(event, '1')
+insert_data(event, '1')
