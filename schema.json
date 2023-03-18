@@ -891,6 +891,11 @@
                 ]
               },
               {
+                "name": "title",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
                 "name": "image_hash",
                 "type": "STRING",
                 "mode": "NULLABLE"
