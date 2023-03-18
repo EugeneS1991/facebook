@@ -911,6 +911,11 @@
                         "name": "page",
                         "type": "STRING",
                         "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "lead_gen_form_id",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE"
                       }
                     ]
                   }
