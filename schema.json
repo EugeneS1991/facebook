@@ -698,6 +698,16 @@
             "mode": "REPEATED"
           },
           {
+            "name": "user_device",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "user_os",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
             "name": "facebook_positions",
             "type": "STRING",
             "mode": "REPEATED"
