@@ -12,6 +12,7 @@ import base64
 import json
 import jsons
 # import logging
+# from pprint import pprint
 import uuid
 # from credential import event
 # logger = logging.getLogger()
@@ -24,7 +25,7 @@ def schema():
 
 def load_table_from_json(bigquery_client, row_to_insert_df, project_id, dataset_id, table_id):
     job_config = bigquery.LoadJobConfig(
-        # autodetect=True,
+        autodetect=False,
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
         schema=schema(),
         write_disposition='WRITE_APPEND',
@@ -206,6 +207,11 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         item.update({
             'creative': creative_item
         })
+        if item.get('creative').get('object_story_spec').get('link_data') is not None:
+            if item.get('creative').get('object_story_spec').get('link_data').get('image_crops') is not None:
+                item.get('creative').get('object_story_spec').get('link_data').pop('image_crops')
+
+                # .pop('image_crops') or item.get('creative').get('object_story_spec').get('link_data').pop('image_crops'):
         insights_item_result.append(item)
     # print(jsons.dump(insights_item_result))
     yield jsons.dump(insights_item_result)
@@ -247,6 +253,7 @@ def insert_data(event, context):
         bigquery_client = bigquery.Client()
 
         for row_to_insert in add_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
+            # pprint(row_to_insert)
             load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
