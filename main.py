@@ -207,11 +207,12 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
         item.update({
             'creative': creative_item
         })
-        if item.get('creative').get('object_story_spec').get('link_data') is not None:
-            if item.get('creative').get('object_story_spec').get('link_data').get('image_crops') is not None:
-                item.get('creative').get('object_story_spec').get('link_data').pop('image_crops')
 
-                # .pop('image_crops') or item.get('creative').get('object_story_spec').get('link_data').pop('image_crops'):
+        if item.get('creative').get('object_story_spec') is not None:
+            if item.get('creative').get('object_story_spec').get('link_data') is not None:
+                if item.get('creative').get('object_story_spec').get('link_data').get('image_crops') is not None:
+                    item.get('creative').get('object_story_spec').get('link_data').pop('image_crops')
+
         insights_item_result.append(item)
     # print(jsons.dump(insights_item_result))
     yield jsons.dump(insights_item_result)
