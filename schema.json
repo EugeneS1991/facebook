@@ -488,6 +488,71 @@
             "mode": "NULLABLE"
           },
           {
+            "name": "excluded_geo_locations",
+            "type": "record",
+            "fields": [
+              {
+                "name": "cities",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "country",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "distance_unit",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "radius",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "region",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "region_id",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "location_types",
+                "type": "STRING",
+                "mode": "repeated"
+              },
+              {
+                "name": "regions",
+                "type": "record",
+                "mode": "repeated",
+                "fields": [
+                  {
+                    "name": "country",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING"
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "name": "excluded_custom_audiences",
             "type": "record",
             "mode": "repeated",
