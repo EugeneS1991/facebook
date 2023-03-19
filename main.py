@@ -234,7 +234,7 @@ def add_data(app_id, app_secret, access_token, api_version, account_id, date_sin
             result.append(value | {'_row_ids': row_ids} | {'_inserted_at_utc': inserted_at_utc})
         yield result
 
-def insert_data(event, context):
+def facebook_data(event, context):
     pubsub_massage = base64.b64decode(event['data']).decode('utf-8')
     # pubsub_massage = event.get('data')
     if pubsub_massage == 'facebook_data':
@@ -258,4 +258,4 @@ def insert_data(event, context):
             load_table_from_json(bigquery_client, row_to_insert, project_id, dataset_id, table_id)
     return "ok"
 
-# insert_data(event, '1')
+# facebook_data(event, '1')

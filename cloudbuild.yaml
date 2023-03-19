@@ -4,7 +4,7 @@ steps:
   - gcloud
   - functions
   - deploy
-  - insert_data
+  - facebook_data
   - --region=europe-west1
   - --trigger-topic=facebook_data
   - --memory=1024MB
