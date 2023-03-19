@@ -60,7 +60,7 @@ def daterange(date_since, date_until):
         print("Fatch start date {}".format(date_range))
         yield date_range.strftime('%Y-%m-%d')
 
-def facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range):
+def get_events(app_id, app_secret, access_token, api_version, account_id, date_range):
     try:
         FacebookAdsApi.init(app_id, app_secret, access_token, api_version=api_version)
         account = AdAccount('act_' + account_id)
@@ -220,7 +220,7 @@ def facebook_data(app_id, app_secret, access_token, api_version, account_id, dat
 
 def get_data(app_id, app_secret, access_token, api_version, account_id, date_since, date_until):
     for date_range in daterange(date_since, date_until):
-        events = facebook_data(app_id, app_secret, access_token, api_version, account_id, date_range)
+        events = get_events(app_id, app_secret, access_token, api_version, account_id, date_range)
         if events:
             for item in events:
                 yield (item)
